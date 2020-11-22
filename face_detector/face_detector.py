@@ -5,6 +5,7 @@ from .utils import prepare_objects
 import numpy as np
 import cv2
 import os
+import sys
 from os.path import isdir
 
 
@@ -38,6 +39,11 @@ def raw_images_processing(path=None):
 	"""
 	names_objects = prepare_objects()
 	if not path:
+		if not isdir(os.getcwd() + "\\data\\images"):
+			sys.exit(
+				"You need to create a data folder in the root of the project, "
+				"+ data/images and data/images/raw_images folders"
+			)
 		path = os.getcwd() + "\\data\\images"
 
 	for name in names_objects.keys():
