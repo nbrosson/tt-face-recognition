@@ -4,6 +4,8 @@ __pycache__/
 *$py.class
 .venv/
 .idea/
+data/images/images_arrays/*
+data/images/raw_images/*
 # C extensions
 *.so
 

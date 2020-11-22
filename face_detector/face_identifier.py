@@ -1,7 +1,8 @@
-from keras_vggface.vggface import VGGFace
-from .utils import prepare_objects
-from .face_detector import get_images_arrays, extract_input_image
 import numpy as np
+
+from keras_vggface.vggface import VGGFace
+from .utils import prepare_objects, get_images_arrays
+from .face_detector import extract_input_face
 from scipy.spatial.distance import euclidean
 from . import MAPPING_FOLDER_TO_NAMES
 
@@ -51,7 +52,7 @@ def images_embedding(input=None):
     names_objects = get_images_arrays(final_name_objects)
 
     # Compute face detection on the input image
-    input_processed_image = extract_input_image(input=input)
+    input_processed_image = extract_input_face(input=input)
 
     # Compute image embedding on all images arrays (if there are more than one array for a person, we use the mean)
     for name in [f for f in final_name_objects.keys() if names_objects[f]]:

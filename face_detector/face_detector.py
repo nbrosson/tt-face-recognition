@@ -5,10 +5,10 @@ from .utils import prepare_objects
 import numpy as np
 import cv2
 import os
-from os.path import isfile, join, isdir
+from os.path import isdir
 
 
-def extract_input_image(input=None):
+def extract_input_face(input=None):
 	"""
 	Get only the face from the input image.
 	:param input: Image uploaded from the web application
@@ -23,27 +23,7 @@ def extract_input_image(input=None):
 	return input_processed_image
 
 
-def get_images_arrays(final_name_objects, path=None):
-	"""
-	For each person, get all the arrays from images_arrays, corresponding to the face of the person.
-	:param final_name_objects:
-	:param path:
-	:return:
-	"""
-	names_objects = final_name_objects.copy()
-	if not path:
-		path = os.getcwd() + "\\data\\images"
-
-	for name in names_objects.keys():
-		temp_path_images_arrays = path + f"\\images_arrays\\{name}"
-		if not isdir(temp_path_images_arrays):
-			os.mkdir(temp_path_images_arrays)
-		for array_path in os.listdir(temp_path_images_arrays):
-			names_objects[name].append(np.load(temp_path_images_arrays + "\\" + array_path))
-	return names_objects
-
-
-def extract_all_images(path=None):
+def raw_images_processing(path=None):
 	"""
 	The goal is to run the face detection algorithm to all training images, and store the results in the folder
 	images_array/
@@ -65,13 +45,14 @@ def extract_all_images(path=None):
 		temp_path_images_arrays = path + f"\\images_arrays\\{name}"
 		if not isdir(temp_path_images_arrays):
 			os.mkdir(temp_path_images_arrays)
+		# processed_files: list of already existing faces arrays
 		processed_files = [os.path.splitext(file)[0] for file in os.listdir(temp_path_images_arrays)]
 		for img_path in os.listdir(temp_path_raw_image):
 			pic_name = os.path.splitext(img_path)[0]
 			if pic_name not in processed_files:
 				try:
-					new_image_array = extract_face_from_image(temp_path_raw_image + "\\" + img_path)
-					np.save(temp_path_images_arrays + "\\" + f"{pic_name}.npy", new_image_array)
+					face_array = extract_face_from_image(temp_path_raw_image + "\\" + img_path)
+					np.save(temp_path_images_arrays + "\\" + f"{pic_name}.npy", face_array)
 				except:
 					pass
 

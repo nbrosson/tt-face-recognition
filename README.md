@@ -3,7 +3,7 @@
 The goal of the project is to build a face recognition algorithm, in a simple web application. How does it work?
 
 1. Define the list of people you want to run the model on. (One or more images per person). Put these images in 
-data/images/raw_images/person_name. One folder per person
+data/images/raw_images/person_name. One folder per person (you can follow data_template example).
 
 2. **Run Face Detection:** Face Detection is an heavy calculation. We will run face detection on all the training data,
 and store the results in data/images/images_arrays.
@@ -29,7 +29,7 @@ pip install -r requirements.txt
 ## All the steps to run the web application
 
 1. Go to data/images/raw_images
-2. Create one folder per person in raw_images/
+2. Create one folder per person in raw_images/ (Follow data_template example)
 3. Complete `MAPPING_FOLDER_TO_NAMES` in face_detector/__init__.py => You need to write all the names of the 
 persons (exactly same names as folder names in the step 2. , and a corresponding description)
 4. Run this command to run the face detection algorithm and store the results: `python main.py prepare-faces-arrays`.
