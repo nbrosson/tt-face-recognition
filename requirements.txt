@@ -1,0 +1,13 @@
+opencv-python==4.2.0.34
+Flask==1.1.1
+flask-smorest==0.18.2
+gunicorn==19.9.0
+pymongo==3.9.0
+mtcnn==0.1.0
+Pillow==7.2.0
+keras-vggface==0.6
+tensorflow==2.2
+Keras-Applications==1.0.8
+Keras-Preprocessing==1.1.2
+click==7.1.2
+h5py==2.10.0
