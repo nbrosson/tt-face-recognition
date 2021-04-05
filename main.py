@@ -12,7 +12,7 @@ def cli():
     pass
 
 @cli.command()
-def prepare_faces_arrays():
+def prepare_faces_arrays_for_benchmark_images():
     LOGGER.warning("Preparing numpy arrays to make future predictions faster")
     raw_images_processing()
     LOGGER.warning("Extraction done")

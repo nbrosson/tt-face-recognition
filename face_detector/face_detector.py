@@ -1,7 +1,6 @@
-from numpy import asarray
 from PIL import Image
 from mtcnn.mtcnn import MTCNN
-from .utils import prepare_objects
+from .utils import prepare_benchmark_names_to_empty_lists_mapping
 import numpy as np
 import cv2
 import os
@@ -26,8 +25,8 @@ def extract_input_face(input=None):
 
 def raw_images_processing(path=None):
 	"""
-	The goal is to run the face detection algorithm to all training images, and store the results in the folder
-	images_array/
+	The goal is to run the face detection algorithm to all benchmark images, and store the results in the folder
+	data/images/images_array/
 
 	1. Make an images_arrays folder if not exist
 	2. For each image of raw_images/ :
@@ -36,8 +35,9 @@ def raw_images_processing(path=None):
 		c. Run and store the face detection result in images_array/person_name
 
 	:param path: Path of the images folder
+	:return: None
 	"""
-	names_objects = prepare_objects()
+	benchmark_names = prepare_benchmark_names_to_empty_lists_mapping()
 	if not path:
 		if not isdir(os.getcwd() + "\\data\\images"):
 			sys.exit(
@@ -46,41 +46,59 @@ def raw_images_processing(path=None):
 			)
 		path = os.getcwd() + "\\data\\images"
 
-	for name in names_objects.keys():
-		temp_path_raw_image = path + f"\\raw_images\\{name}"
-		temp_path_images_arrays = path + f"\\images_arrays\\{name}"
-		if not isdir(temp_path_images_arrays):
-			os.mkdir(temp_path_images_arrays)
-		# processed_files: list of already existing faces arrays
-		processed_files = [os.path.splitext(file)[0] for file in os.listdir(temp_path_images_arrays)]
-		for img_path in os.listdir(temp_path_raw_image):
+	for name in benchmark_names.keys():
+		folder_path_of_raw_images_for_one_benchmark_person = path + f"\\raw_images\\{name}"
+		folder_path_of_faces_arrays_for_one_benchmark_person = path + f"\\images_arrays\\{name}"
+		if not isdir(folder_path_of_faces_arrays_for_one_benchmark_person):
+			try:
+				os.mkdir(folder_path_of_faces_arrays_for_one_benchmark_person)
+			except FileNotFoundError:
+				print("You should check that the folder images/images_arrays is created")
+
+		# already_processed_images: list of already existing faces arrays
+		already_processed_images = [os.path.splitext(face_array_file)[0] for face_array_file in
+									os.listdir(folder_path_of_faces_arrays_for_one_benchmark_person)]
+		for img_path in os.listdir(folder_path_of_raw_images_for_one_benchmark_person):
 			pic_name = os.path.splitext(img_path)[0]
-			if pic_name not in processed_files:
+			if pic_name not in already_processed_images:
 				try:
-					face_array = extract_face_from_image(temp_path_raw_image + "\\" + img_path)
-					np.save(temp_path_images_arrays + "\\" + f"{pic_name}.npy", face_array)
+					face_array = extract_face_from_image(filename=folder_path_of_raw_images_for_one_benchmark_person + "\\" + img_path)
+					np.save(folder_path_of_faces_arrays_for_one_benchmark_person + "\\" + f"{pic_name}.npy", face_array)
 				except:
 					pass
 
 
 def extract_face_from_image(filename=None, img=None, required_size=(224, 224)):
+	"""
+	1. Load an image
+	2. Detect the face from this image as a box
+	3. Extract the box from the image as an array
+
+	Note that if several faces are detected, only the most probable (face_detection_results[0]), is selected. Please
+	provide an image with only one person to avoid confusions.
+
+	:param filename: Url of the image
+	:param img: Numpy Array
+	:return: Array of the detected face
+	"""
 	# load image from file or from numpy image
 	if img is not None:
-		pixels = cv2.imdecode(img, cv2.IMREAD_COLOR)
+		uploaded_raw_image = cv2.imdecode(img, cv2.IMREAD_COLOR)
 	else:
-		pixels = cv2.imread(filename)
+		uploaded_raw_image = cv2.imread(filename)
 	mctnn_detector = MTCNN()
 
 	# detect faces in the image
-	results = mctnn_detector.detect_faces(pixels)
-	# extract the bounding box from the first face
-	x1, y1, width, height = results[0]['box']
+	face_detection_results = mctnn_detector.detect_faces(uploaded_raw_image)
+
+	# extract the bounding box from the detected face
+	x1, y1, width, height = face_detection_results[0]['box']
 	x2, y2 = x1 + width, y1 + height
 
 	# extract the face
-	face = pixels[y1:y2, x1:x2]
+	face = uploaded_raw_image[y1:y2, x1:x2]
 	# resize pixels to the model size
-	image = Image.fromarray(face)
-	image = image.resize(required_size)
-	face_array = asarray(image)
-	return face_array
+	face_only_image = Image.fromarray(face)
+	face_only_image = face_only_image.resize(required_size)
+	face_array = np.asarray(face_only_image)
+	return face_array.reshape(1, required_size[0], required_size[1], 3)

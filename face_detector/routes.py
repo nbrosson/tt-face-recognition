@@ -21,8 +21,7 @@ def index():
 def face_identification():
     start = timeit.default_timer()
     image_data = request.files["input_image"].read()
-    res = predict_input_identity(input=image_data)
+    res = predict_input_identity(uploaded_image=image_data)
     stop = timeit.default_timer()
     res["computing_time"] = stop-start
-    response = json.dumps(res, sort_keys=True, indent=4, separators=(',', ': '))
     return render_template("result.html", res=res), 200

@@ -1,8 +1,6 @@
 opencv-python==4.2.0.34
 Flask==1.1.1
 flask-smorest==0.18.2
-gunicorn==19.9.0
-pymongo==3.9.0
 mtcnn==0.1.0
 Pillow==7.2.0
 keras-vggface==0.6

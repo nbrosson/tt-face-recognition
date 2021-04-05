@@ -30,14 +30,12 @@ pip install -r requirements.txt
 
 1. Go to data/images/raw_images
 2. Create one folder per person in raw_images/ (Follow data_template example)
-3. Complete `MAPPING_FOLDER_TO_NAMES` in face_detector/__init__.py => You need to write all the names of the 
-persons (exactly same names as folder names in the step 2. , and a corresponding description)
-4. Run this command to run the face detection algorithm and store the results: `python main.py prepare-faces-arrays`.
+3. Run this command to run the face detection algorithm and store the results: `python main.py prepare-faces-arrays-for-benchmark-images`.
 It is a long calculation, and this is why we split the face detection from the face recognition. 
-5. Run the web application that will perform face recognition:
+4. Run the web application that will perform face recognition:
 ```
 set FLASK_APP=app.py 
-flask run
+flask run --port=5000
 ```
 
 6. test your application in 127.0.0.1:5000
