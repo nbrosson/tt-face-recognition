@@ -12,8 +12,8 @@ def cli():
     pass
 
 @cli.command()
-def prepare_faces_arrays_for_benchmark_images():
-    LOGGER.warning("Preparing numpy arrays to make future predictions faster")
+def apply_face_detection_on_benchmark_people():
+    LOGGER.warning("Running Face detection on benchmark data and store results in the filesystem...")
     raw_images_processing()
     LOGGER.warning("Extraction done")
 

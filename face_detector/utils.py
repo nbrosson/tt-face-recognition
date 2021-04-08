@@ -17,7 +17,7 @@ def prepare_benchmark_names_to_empty_lists_mapping(path=os.getcwd() + "\\data\\i
     return benchmark_mapping
 
 
-def get_face_arrays_for_each_benchmark_person(benchmark_names_mapping, path=os.getcwd() + "\\data\\images"):
+def get_face_arrays_from_file_system():
     """
     For each person, get all the arrays from images_arrays, corresponding to the face of the person.
 
@@ -25,10 +25,11 @@ def get_face_arrays_for_each_benchmark_person(benchmark_names_mapping, path=os.g
     :param path: Path where to find the detected faces array.
     :return: Dict such as {"name_1": [face_array_1, face_array_2, ...], "name_2": [face_array_1, ...]...}
     """
-    benchmark_names_to_face_arrays_mapping = benchmark_names_mapping.copy()
-
-    for name in benchmark_names_to_face_arrays_mapping.keys():
-        temp_path_face_arrays_one_person = path + f"\\images_arrays\\{name}"
+    path = os.getcwd() + "\\data\\images\\images_arrays"
+    benchmark_names_to_face_arrays_mapping = dict()
+    for name in os.listdir(path):
+        benchmark_names_to_face_arrays_mapping[name] = []
+        temp_path_face_arrays_one_person = path + f"\\{name}"
         if not isdir(temp_path_face_arrays_one_person):
             os.mkdir(temp_path_face_arrays_one_person)
         for array_path in os.listdir(temp_path_face_arrays_one_person):
